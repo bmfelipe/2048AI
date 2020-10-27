@@ -12,14 +12,18 @@ class Game(tk.Frame):
             self, bg = colors.GRID_COLOR, bd=3, width=600, height=600
         )
         self.main_grid.grid(pady=(100,0))
-        self.myGUI()
+        self.interface()
         self.launch()
 
+        self.master.bind("<Up>",self.swipe_up)
+        self.master.bind("<Down>",self.swipe_down)
+        self.master.bind("<Left>",self.swipe_left)
+        self.master.bind("<Right>",self.swipe_right)
 
 
         self.mainloop()
 
-    def myGUI(self):
+    def interface(self):
         self.cells = []
         for i in range(4):
             row = []
@@ -56,7 +60,7 @@ class Game(tk.Frame):
  
 
         #start the game with initial twos
-        
+
         result = np.where(self.matrix == 2)
         row = int(result[0][0])
         col = int(result[1][0])
@@ -72,6 +76,150 @@ class Game(tk.Frame):
         self.score=0
 
 
+    def stack_cells(self):
+        stack_matrix = np.zeros((4*4),dtype="int")
+        for row_cnt in range(4):
+            fill_pos = 0
+            for col_cnt in range(4):
+                if self.matrix[row_cnt][col_cnt] != 0:
+                    stack_matrix[row_cnt][fill_pos] = self.matrix[row_cnt][col_cnt]
+                    fill_pos += 1
+
+        self.matrix = stack_matrix
+    
+    def sum_cells(self):
+        for row in range(4):
+            for col in range(4):
+                if self.matrix[row][col] != 0 and self.matrix[row][col] == self.matrix[row][col+1]:
+                    self.matrix[row][col] *= 2
+                    self.matrix[row][col+1] = 0
+                    self.score += self.matrix[row][col+1]
 
 
-Game()
+    def reverse(self):
+        reverse_matrix = np.zeros((4*4),dtype="int")
+        for row in range(4):
+            # reverse_matrix.append([])
+            for col in range(4):
+                reverse_matrix[row][col] = self.matrix[row][3-col]
+                # reverse_matrix[row].append(self.matrix[row][3-col])
+        self.matrix = reverse_matrix
+    
+    def transpose(self):
+        # transpose_matrix = np.zeros((4*4),dtype="int")
+        # for row in range(4):
+        #     for col in range(4):
+        #         transpose_matrix[row][col] = self.matrix[col][row]
+        # self.matrix = transpose_matrix
+        self.matrix = self.matrix.transpose()
+
+    def show_random_tile(self):
+        row = random.randint(0,3)
+        col = random.randint(0,3)
+        while(self.matrix[row][col] != 0):
+            # Check another available cell
+            row = random.randint(0,3)
+            col = random.randint(0,3)
+        self.matrix[row][col] = random.choice([2,4])
+
+    def update_interface(self):
+        for row in range(4):
+            for col in range(4):
+                if self.matrix[row][col] != 0:
+                    self.cells[row][col]["frame"].configure(bg=colors.TILE_COLORS[self.matrix[row][col]])
+                    self.cells[row][col]["number"].configure(
+                        bg=colors.TILE_COLORS[self.matrix[row][col]],
+                        fg=colors.NUMBERS_COLORS[self.matrix[row][col]],
+                        font=colors.LABEL_FONT,
+                        text=str(self.matrix[row][col])
+                        )
+
+                else:
+                    self.cells[row][col]["frame"].configure(bg=colors.EMPTY_CELL_COLOR)
+                    self.cells[row][col]["number"].configure(bg=colors.EMPTY_CELL_COLOR, text="")
+        self.score_l.configure(text=self.score)
+        self.update_idletasks()
+
+    def swipe_up(self,event):
+        self.transpose()
+        self.stack_cells()
+        self.sum_cells()
+        self.stack_cells()
+        self.transpose()
+        self.show_random_tile()
+        self.update_interface()
+        self.is_over()
+
+
+    
+    def swipe_down(self,event):
+        self.transpose()
+        self.reverse()
+        self.stack_cells()
+        self.sum_cells()
+        self.stack_cells()
+        self.reverse()
+        self.transpose()
+        self.show_random_tile()
+        self.update_interface()
+        self.is_over()
+
+
+    
+    def swipe_left(self,event):
+        self.stack_cells()
+        self.sum_cells()
+        self.stack_cells()
+        self.show_random_tile()
+        self.update_interface()
+        self.is_over()
+
+    def swipe_right(self,event):
+        self.reverse()
+        self.stack_cells()
+        self.sum_cells()
+        self.stack_cells()
+        self.reverse()
+        self.show_random_tile()
+        self.update_interface()
+        self.is_over()
+
+    def find_horizontal_moves(self):
+        for row in range(4):
+            for col in range(3):
+                if self.matrix[row][col] == self.matrix[row][col+1]:
+                    return True
+        return False
+
+    def find_vertical_moves(self):
+        for row in range(3):
+            for col in range(4):
+                if self.matrix[row][col] == self.matrix[row+1][col]:
+                    return True
+        return False
+
+    def is_over(self):
+        if any(2048 in row for row in self.matrix):
+            is_over_frame =  tk.Frame(self.main_grid,borderwidth=2)
+            is_over_frame.place(relx=0.5, rely=0.5, achor="center")
+            tk.Label(is_over_frame, text="Victory", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
+        elif not any(0 in row for row in self.matrix) and not self.find_horizontal_moves() and not self.find_vertical_moves():
+            is_over_frame =  tk.Frame(self.main_grid,borderwidth=2)
+            is_over_frame.place(relx=0.5, rely=0.5, achor="center")
+            tk.Label(is_over_frame, text="Game Over", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
+
+def main():
+    Game()
+
+if __name__=='__main__':
+    main()
+
+
+
+
+
+          
+
+
+
+
