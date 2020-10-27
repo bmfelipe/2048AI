@@ -5,7 +5,11 @@ TILE_COLORS = {2: "#daeddf", 4: "#9ae3ae", 8: "#6ce68d", 16: "#42ed71",
 
 LABEL_FONT = ("Verdana", 40, "bold")
 
-GAME_COLOR = "#a6bdbb"
+EMPTY_CELL_COLOR = "#c2b3a9"
+GRID_COLOR = "#a39489"
+SCORE_LABEL_FONT = ("Verdana",24)
+
+BACKGROUND_COLOR = "#a6bdbb"
 
 EMPTY_COLOR = "#8eaba8"
 
