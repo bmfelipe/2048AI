@@ -56,9 +56,7 @@ class Game(tk.Frame):
  
 
         #start the game with initial twos
-        # row = random.randint(0,3) row position
-        # col = random.randint(0,3) column position
-        # self.matrix[row,col] = 2
+        
         result = np.where(self.matrix == 2)
         row = int(result[0][0])
         col = int(result[1][0])
