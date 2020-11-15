@@ -77,7 +77,8 @@ class Game(tk.Frame):
 
 
     def stack_cells(self):
-        stack_matrix = np.zeros((4*4),dtype="int")
+        # stack_matrix = np.zeros((4*4),dtype="int")
+        stack_matrix = [[0] * 4 for _ in range(4)]
         for row_cnt in range(4):
             fill_pos = 0
             for col_cnt in range(4):
@@ -89,7 +90,7 @@ class Game(tk.Frame):
     
     def sum_cells(self):
         for row in range(4):
-            for col in range(4):
+            for col in range(3):
                 if self.matrix[row][col] != 0 and self.matrix[row][col] == self.matrix[row][col+1]:
                     self.matrix[row][col] *= 2
                     self.matrix[row][col+1] = 0
@@ -97,13 +98,14 @@ class Game(tk.Frame):
 
 
     def reverse(self):
-        reverse_matrix = np.zeros((4*4),dtype="int")
+        reverse_matrix = [[0] * 4 for _ in range(4)]
         for row in range(4):
             # reverse_matrix.append([])
             for col in range(4):
                 reverse_matrix[row][col] = self.matrix[row][3-col]
                 # reverse_matrix[row].append(self.matrix[row][3-col])
         self.matrix = reverse_matrix
+        # self.matrix = self.matrix[::-1]
     
     def transpose(self):
         # transpose_matrix = np.zeros((4*4),dtype="int")
@@ -111,7 +113,7 @@ class Game(tk.Frame):
         #     for col in range(4):
         #         transpose_matrix[row][col] = self.matrix[col][row]
         # self.matrix = transpose_matrix
-        self.matrix = self.matrix.transpose()
+        self.matrix = np.asarray(self.matrix).transpose()
 
     def show_random_tile(self):
         row = random.randint(0,3)
@@ -125,18 +127,18 @@ class Game(tk.Frame):
     def update_interface(self):
         for row in range(4):
             for col in range(4):
-                if self.matrix[row][col] != 0:
-                    self.cells[row][col]["frame"].configure(bg=colors.TILE_COLORS[self.matrix[row][col]])
-                    self.cells[row][col]["number"].configure(
-                        bg=colors.TILE_COLORS[self.matrix[row][col]],
-                        fg=colors.NUMBERS_COLORS[self.matrix[row][col]],
-                        font=colors.LABEL_FONT,
-                        text=str(self.matrix[row][col])
-                        )
-
-                else:
+                cell_value = self.matrix[row][col]
+                if cell_value == 0:
                     self.cells[row][col]["frame"].configure(bg=colors.EMPTY_CELL_COLOR)
                     self.cells[row][col]["number"].configure(bg=colors.EMPTY_CELL_COLOR, text="")
+                else:
+                    self.cells[row][col]["frame"].configure(bg=colors.TILE_COLORS[cell_value])
+                    self.cells[row][col]["number"].configure(
+                        bg=colors.TILE_COLORS[cell_value],
+                        fg=colors.NUMBERS_COLORS[cell_value],
+                        font=colors.LABEL_FONT,
+                        text=str(cell_value)
+                        )
         self.score_l.configure(text=self.score)
         self.update_idletasks()
 
@@ -201,11 +203,11 @@ class Game(tk.Frame):
     def is_over(self):
         if any(2048 in row for row in self.matrix):
             is_over_frame =  tk.Frame(self.main_grid,borderwidth=2)
-            is_over_frame.place(relx=0.5, rely=0.5, achor="center")
+            is_over_frame.place(relx=0.5, rely=0.5, anchor="center")
             tk.Label(is_over_frame, text="Victory", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
         elif not any(0 in row for row in self.matrix) and not self.find_horizontal_moves() and not self.find_vertical_moves():
             is_over_frame =  tk.Frame(self.main_grid,borderwidth=2)
-            is_over_frame.place(relx=0.5, rely=0.5, achor="center")
+            is_over_frame.place(relx=0.5, rely=0.5, anchor="center")
             tk.Label(is_over_frame, text="Game Over", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
 
 def main():
