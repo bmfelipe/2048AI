@@ -1,7 +1,10 @@
 import tkinter as tk #GUI
 import colors as colors 
 import random
-import numpy as np 
+import numpy as np
+
+
+flag_over=0
 
 class Game(tk.Frame):
     def __init__(self):
@@ -94,7 +97,9 @@ class Game(tk.Frame):
                 if self.matrix[row][col] != 0 and self.matrix[row][col] == self.matrix[row][col+1]:
                     self.matrix[row][col] *= 2
                     self.matrix[row][col+1] = 0
-                    self.score += self.matrix[row][col+1]
+                    self.score += self.matrix[row][col]
+                    # print("Score: "+str(self.score))
+                    # print("matrix vaslue: "+str(self.matrix[row][col]))
 
 
     def reverse(self):
@@ -205,13 +210,17 @@ class Game(tk.Frame):
             is_over_frame =  tk.Frame(self.main_grid,borderwidth=2)
             is_over_frame.place(relx=0.5, rely=0.5, anchor="center")
             tk.Label(is_over_frame, text="Victory", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
+            flag_over=1
         elif not any(0 in row for row in self.matrix) and not self.find_horizontal_moves() and not self.find_vertical_moves():
             is_over_frame =  tk.Frame(self.main_grid,borderwidth=2)
             is_over_frame.place(relx=0.5, rely=0.5, anchor="center")
             tk.Label(is_over_frame, text="Game Over", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
+            flag_over=1
+
 
 def main():
     Game()
+    print(str(flag_over))
 
 if __name__=='__main__':
     main()
