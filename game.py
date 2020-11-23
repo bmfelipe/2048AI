@@ -3,6 +3,7 @@ import colors as colors
 import random
 import numpy as np
 import os
+import neat
 
 
 flag_over=0
