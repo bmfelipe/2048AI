@@ -3,7 +3,7 @@ import colors as colors
 import random
 import numpy as np
 import os
-import neat
+# import neat
 
 
 flag_over=0
@@ -224,14 +224,14 @@ def main():
     Game()
     print(str(flag_over))
 
-def run(config_path):
+# def run(config_path):
 
-    config = neat.config.Config(neat.DefaultGenome,neat.DeafaultReproduction,neat.DefaultSpeciesSet,neat.DefaultStagnation,config_path)
+#     config = neat.config.Config(neat.DefaultGenome,neat.DeafaultReproduction,neat.DefaultSpeciesSet,neat.DefaultStagnation,config_path)
 
 if __name__=='__main__':
-    local_directory = os.path.dirname(__file__)
-    config_path = os.path.join(local_directory,"neat_config.txt")
-    run(config_path)
+    # local_directory = os.path.dirname(__file__)
+    # config_path = os.path.join(local_directory,"neat_config.txt")
+    # run(config_path)
     main()
 
 
