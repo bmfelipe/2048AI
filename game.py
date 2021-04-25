@@ -220,7 +220,7 @@ class Game(tk.Frame):
             flag_over=1
 
 
-def main():
+def main(genomes,config):
     Game()
     print(str(flag_over))
 
@@ -228,10 +228,18 @@ def main():
 
 #     config = neat.config.Config(neat.DefaultGenome,neat.DeafaultReproduction,neat.DefaultSpeciesSet,neat.DefaultStagnation,config_path)
 
+def run(config_path):
+    config = neat.config.Config(neat.DefaultGenome,neat.DefaultReproduction,neat.DefaultSpeciesSet,neat.DefaultStagnation,config_path)
+    population = neat.population(config)
+    stats = neat.StatisticsReporter()
+    population.add_reporter(stats)
+    winner = population.run(,50)
+
+
 if __name__=='__main__':
-    # local_directory = os.path.dirname(__file__)
-    # config_path = os.path.join(local_directory,"neat_config.txt")
-    # run(config_path)
+    local_directory = os.path.dirname(__file__)
+    config_path = os.path.join(local_directory,"neat_config.txt")
+    run(config_path)
     main()
 
 
