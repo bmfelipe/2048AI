@@ -233,13 +233,7 @@ class Game(tk.Frame):
             flag_over=1
 
 
-def genome_check(genome_id, genome, config):
-    genome.fitness = 0.0
-    neat = neat.nn.FeedForwardNetwork.Create(genome,config)
-    game.restart_game()
     
-
-
 
 def main(genomes,config):
     Game()
@@ -254,7 +248,7 @@ def run(config_path):
     population = neat.population(config)
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    winner = population.run(eval_genomes,50)
+    winner = population.run(main,50) #calls main function 50 times and passes the gnomes
 
 
 if __name__=='__main__':
