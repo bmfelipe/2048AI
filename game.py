@@ -3,10 +3,23 @@ import colors as colors
 import random
 import numpy as np
 import os
+import neat
 # import neat
 
+GAME_SIZE = 4
+NOT_MOVED_RESTART_THRESHOLD = 10
 
 flag_over=0
+
+inputs=[]
+
+for i in range(GAME_SIZE):
+    aux=[]
+    [aux.append(0) for j in range(GAME_SIZE)]
+    inputs.append(aux)
+
+outputs=[0, 0, 0, 0]
+
 
 class Game(tk.Frame):
     def __init__(self):
@@ -220,6 +233,14 @@ class Game(tk.Frame):
             flag_over=1
 
 
+def genome_check(genome_id, genome, config):
+    genome.fitness = 0.0
+    neat = neat.nn.FeedForwardNetwork.Create(genome,config)
+    game.restart_game()
+    
+
+
+
 def main(genomes,config):
     Game()
     print(str(flag_over))
@@ -233,7 +254,7 @@ def run(config_path):
     population = neat.population(config)
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    winner = population.run(,50)
+    winner = population.run(eval_genomes,50)
 
 
 if __name__=='__main__':

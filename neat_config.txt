@@ -1,6 +1,7 @@
 [NEAT]
 fitness_criterion     = max
 fitness_threshold     = 2048
+no_fitness_termination = True
 pop_size              = 100
 reset_on_extinction   = False
 
@@ -46,7 +47,7 @@ node_delete_prob        = 0.2
 # network parameters
 num_hidden              = 0  # first easy then we add up to that
 num_inputs              = 16 # 4 by 4 matrix number
-num_outputs             = 1  # Movement 
+num_outputs             = 4  # Movement 
 
 # node response options
 response_init_mean      = 1.0
