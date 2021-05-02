@@ -4,8 +4,12 @@ import random
 import numpy as np
 import os
 import neat
+import math
+from math import log2
+from pynput.keyboard import Key, Controller
 # import neat
 
+keyboard = Controller()
 GAME_SIZE = 4
 NOT_MOVED_RESTART_THRESHOLD = 10
 
@@ -233,30 +237,65 @@ class Game(tk.Frame):
             flag_over=1
 
 
-    
+def fitnesss(genomes,config):
+    for genome_id, genome in genomes:
+        main(genome_id,genome,config)
 
-def main(genomes,config):
-    Game()
-    print(str(flag_over))
+def redimension_input_matrix(arr):
+    val = max(arr)
+    log_val = log2(val)
+    if log_val == 0:
+        return
+    for i in range(len(arr)):
+        if arr[i] != 0:
+            arr[i] = log2(arr[i]) / log_val
+    return arr
 
-# def run(config_path):
+def map_neuron_to_move(pos):
+    if pos == 0:
+        swipe_right
+        return Direction.UP
+    elif pos == 1:
+        return Direction.DOWN
+    elif pos == 2:
+        return Direction.LEFT
+    elif pos == 3:
+        return Direction.RIGHT
 
-#     config = neat.config.Config(neat.DefaultGenome,neat.DeafaultReproduction,neat.DefaultSpeciesSet,neat.DefaultStagnation,config_path)
+
+
+def main(genome_id,genome,config):
+    genome.fitness = 0.0
+    network =  neat.nn.FeedForwardNetwork.create(genome,config)
+    flag_over=0
+    while flag_over==0:
+        in_neurons = redimension_input_matrix([j for i in matrix for j in i])
+        output = network.activate(in_neurons)
+        output_moves = [(map_neuron_to_move(i), output[i]) for i in range(len(output))]
+        output_moves = sorted(output_moves, key=lambda x: x[1])
+        Game()
+        print(str(flag_over))
+
 
 def run(config_path):
     config = neat.config.Config(neat.DefaultGenome,neat.DefaultReproduction,neat.DefaultSpeciesSet,neat.DefaultStagnation,config_path)
-    population = neat.population(config)
+    population = neat.Population(config)
     stats = neat.StatisticsReporter()
     population.add_reporter(stats)
-    winner = population.run(main,50) #calls main function 50 times and passes the gnomes
+    winner = population.run(fitnesss,50) #calls main function 50 times and passes the gnomes
+    # show final stats
+    print('\nBest genome:\n{!s}'.format(winner))
 
 
 if __name__=='__main__':
     local_directory = os.path.dirname(__file__)
-    config_path = os.path.join(local_directory,"neat_config.txt")
+    print("local_director: ",local_directory)
+    config_path = os.path.join(local_directory,"neat_config.txt").replace("\\","/")
+    print("config_path: ",config_path)
     run(config_path)
     main()
 
+ 
 
 
 
