@@ -25,6 +25,7 @@ for i in range(GAME_SIZE):
 outputs=[0, 0, 0, 0]
 
 
+
 class Game(tk.Frame):
     def __init__(self):
         tk.Frame.__init__(self)
@@ -45,6 +46,7 @@ class Game(tk.Frame):
 
         self.mainloop()
 
+game=Game()
     def interface(self):
         self.cells = []
         for i in range(4):
@@ -272,7 +274,7 @@ def main(genome_id,genome,config):
     network =  neat.nn.FeedForwardNetwork.create(genome,config)
     flag_over=0
     while flag_over==0:
-        in_neurons = redimension_input_matrix([j for i in self.matrix for j in i])
+        in_neurons = redimension_input_matrix([j for i in matrix for j in i])
         output = network.activate(in_neurons)
         output_moves = [(map_neuron_to_movement(i), output[i]) for i in range(len(output))]
         output_moves = sorted(output_moves, key=lambda x: x[1])
