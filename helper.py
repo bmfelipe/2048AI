@@ -34,3 +34,19 @@ def char_to_key(char):
 
 def char_to_move(char):
     return mapped_moves[mapped_keyz[char]]
+
+def rotate_clockwise(arr, iteration = 1):
+    if iteration <= 0:
+        return
+
+    l = len(arr)
+    for i in range(0, iteration):
+        for s in range(0, int(l / 2)):
+            for j in range(0, l - (2 * s) - 1):
+                temp = arr[s][s + j]
+                arr[s][s + j] = arr[l - s - j - 1][s]
+                arr[l - s - j - 1][s] = arr[l - s - 1][l - s - j - 1]
+                arr[l - s - 1][l - s - j - 1] = arr[s + j][l - s - 1]
+                arr[s + j][l - s - 1] = temp
+
+    return arr
