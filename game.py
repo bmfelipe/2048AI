@@ -46,7 +46,6 @@ class Game(tk.Frame):
 
         self.mainloop()
 
-game=Game()
     def interface(self):
         self.cells = []
         for i in range(4):
@@ -238,7 +237,7 @@ game=Game()
             tk.Label(is_over_frame, text="Game Over", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
             flag_over=1
 
-
+game=Game()
 def fitnesss(genomes,config):
     for genome_id, genome in genomes:
         main(genome_id,genome,config)
