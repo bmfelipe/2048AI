@@ -9,8 +9,8 @@ FONT = ("Verdana", 40, "bold")
 class GameInterface(Frame):
     def __init__(self,game):
         self.game = game
-        self.score = game.Score()
-        self.matrix = game.Matrix()
+        self.score = game.getScore()
+        self.matrix = game.getMatrix()
         self.matrix_size = len(self.matrix)
         Frame.__init__(self)
         self.matrix_positions = []
@@ -23,7 +23,7 @@ class GameInterface(Frame):
         self.game = game
 
     def refresh_screen(self):
-        self.matrix = self.game.Matrix()
+        self.matrix = self.game.getMatrix()
         for i in range(self.matrix_size):
             for j in range(self.matrix_size):
                 tmp = self.matrix[i][j]
@@ -32,7 +32,7 @@ class GameInterface(Frame):
                 else:
                     self.matrix_positions[i][j].configure(bg=colors.TILE_COLORS[tmp],fg=colors.NUMBERS_COLORS[tmp],font=colors.LABEL_FONT,text=str(tmp))
 
-        self.score = self.game.Score()
+        self.score = self.game.getScore()
         self.score_position[0].config(text="Score: " + str(self.score))
         self.update_idletasks()
         self.update()
@@ -47,7 +47,7 @@ class GameInterface(Frame):
             rows = []
 
             for j in range(self.matrix_size):
-                cell = Frame(matrix_frame, bg=colors.EMPTY_CELL_COLOR, width=150,height=150)
+                cell = Frame(matrix_frame, bg=colors.EMPTY_CELL_COLOR, width=500 / self.matrix_size,height=500 / self.matrix_size)
                 cell.grid(row=i, column=j, padx=5, pady=5)
                 c_aux = Label(master=cell, text="", bg=colors.EMPTY_CELL_COLOR, justify=CENTER, font=FONT, width=4,height=2)
                 c_aux.grid()
@@ -55,7 +55,7 @@ class GameInterface(Frame):
 
             self.matrix_positions.append(rows)
 
-        matrix_frame.pack()
+        # matrix_frame.pack()
         
 
     def show_score(self):

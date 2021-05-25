@@ -8,52 +8,27 @@ import random
 def refresh(size):
     return [[0 for i in range(0, size)] for j in range(0, size)]
 
-def count_cell_value(mat, val):
-    cnt = 0
-    for i in mat:
-        for j in i:
-            if j == val:
-                cnt = cnt +1
-            
-    return cnt
-
-
-
-def show_random_tile(self):
-        prob = randint(1, 100)
-        if prob >=90 :
-            new_tile = 4
-        else:
-            new_tile = 2
-
-        row = random.randint(0,3)
-        col = random.randint(0,3)
-        while(self.matrix[row][col] != 0):
-            # Check another available cell
-            row = random.randint(0,3)
-            col = random.randint(0,3)
-        self.matrix[row][col] = new_tile
-
-def find_horizontal_moves(self):
+def find_horizontal_moves(matrix):
     for row in range(4):
         for col in range(3):
-            if self.matrix[row][col] == self.matrix[row][col+1]:
+            if matrix[row][col] == matrix[row][col+1]:
                 return True
     return False
 
-def find_vertical_moves(self):
+def find_vertical_moves(matrix):
     for row in range(3):
         for col in range(4):
-            if self.matrix[row][col] == self.matrix[row+1][col]:
+            if matrix[row][col] == matrix[row+1][col]:
                 return True
     return False
 
-def moves_left(self):
-    if not self.find_horizontal_moves() and not self.find_vertical_moves():
+def moves_left(matrix):
+    hm = find_horizontal_moves(matrix)
+    vm = find_vertical_moves(matrix)
+    if not hm and not vm:
         return False
     else:
         return True
-
 
 
 class Game:
@@ -81,8 +56,32 @@ class Game:
         self.score = 0
         self.matrix = refresh(self.game_size)
         self.screens = Screens.IDLE
-        self.show_random_tile(self.matrix)
-        self.show_random_tile(self.matrix)
+        self.show_random_tile()
+        self.show_random_tile()
+
+    def show_random_tile(self):
+        prob = randint(1, 100)
+        if prob >=90 :
+            new_tile = 4
+        else:
+            new_tile = 2
+
+        row = random.randint(0,3)
+        col = random.randint(0,3)
+        while(self.matrix[row][col] != 0):
+            # Check another available cell
+            row = random.randint(0,3)
+            col = random.randint(0,3)
+        self.matrix[row][col] = new_tile
+
+    def count_cell_value(mat, val):
+        cnt = 0
+        for i in mat:
+            for j in i:
+                if j == val:
+                    cnt = cnt +1
+                
+        return cnt
 
     def merge_down(self,matrix):
         merged = False
@@ -111,23 +110,24 @@ class Game:
         return shifted
 
     def try_move(self,moves):
-        if not moves_left(self.matrix):
+        moves_l = moves_left(self.matrix)
+        if not moves_l:
             self.screens = Screens.LOSE
             return False
 
         moved = False
         rotations = 0
         back_rotations = 0
-        if moves == Moves.UP:
+        if moves == Moves.SWIPE_UP:
             rotations = 2
             back_rotations = 2
-        elif moves == Moves.DOWN:
+        elif moves == Moves.SWIPE_DOWN:
             rotations = 0
             back_rotations = 0
-        elif moves == Moves.LEFT:
+        elif moves == Moves.SWIPE_LEFT:
             rotations = 3
             back_rotations = 1
-        elif moves == Moves.RIGHT:
+        elif moves == Moves.SWIPE_RIGHT:
             rotations = 1
             back_rotations = 3
         else:
@@ -143,7 +143,7 @@ class Game:
         helper.rotate_clockwise(self.matrix, back_rotations)
 
         if moved:
-            self.show_random_tile(self.matrix)
+            self.show_random_tile()
 
         return moved
 

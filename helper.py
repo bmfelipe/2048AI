@@ -21,7 +21,7 @@ class Screens(Enum):
     IDLE = "idle"
     INIT = "init"
 
-mapped_moves = {None: None, Keyz.UP: Moves.UP, Keyz.DOWN: Moves.DOWN, Keyz.LEFT: Moves.LEFT, Keyz.RIGHT: Moves.RIGHT}
+mapped_moves = {None: None, Keyz.UP: Moves.SWIPE_UP, Keyz.DOWN: Moves.SWIPE_DOWN, Keyz.LEFT: Moves.SWIPE_LEFT, Keyz.RIGHT: Moves.SWIPE_RIGHT}
 mapped_keyz = {None: None, "w": Keyz.UP, "s": Keyz.DOWN, "a": Keyz.LEFT, "d": Keyz.RIGHT}
 
 def key_to_move(key):

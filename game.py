@@ -80,8 +80,6 @@ class Game(tk.Frame):
         twos_pos = np.random.default_rng().choice(16, 2, replace=False)
         self.matrix[twos_pos] = 2
         self.matrix = self.matrix.reshape((4,4))
- 
-
         #start the game with initial twos
 
         result = np.where(self.matrix == 2)

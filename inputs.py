@@ -12,7 +12,7 @@ game.refresh_game()
 interf = GameInterface(game)
 
 while True:
-    print_matrix(game.Matrix())
+    print_matrix(game.getMatrix())
     interf.refresh_screen()
     stdin = input("Move:")
     movement = char_to_move(stdin)
@@ -21,3 +21,4 @@ while True:
 
     game.try_move(movement)
     interf.refresh_screen()
+
