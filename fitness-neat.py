@@ -141,7 +141,7 @@ def run(config_file):
     print('\nOutput:')
     winner_network = neat.nn.FeedForwardNetwork.create(winner, config)
     node_names = {-1: 'A', -2: 'B', 0: 'A XOR B'}
-    show.show_network(config, winner, True, node_names=node_names)
+    show.show_network(config, winner, view=True, node_names=node_names)
     show.stats(statistics, ylog=False, view=True)
     show.plot_species(statistics, view=True)
 
