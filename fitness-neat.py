@@ -1,3 +1,4 @@
+from neat import statistics
 import game_v2
 from game_v2 import *
 import interface
@@ -6,6 +7,9 @@ import helper
 import math
 import neat
 from math import log2
+import show
+import os
+
 
 
 inputs = []
@@ -24,6 +28,7 @@ def redimension_input_matrix(arr):
 for i in range(4):
     tmp = []
     [tmp.append(0) for j in range(4)]
+    print("Input: ",str(tmp))
     inputs.append(tmp)
 
 outputs = [0,0,0,0]
@@ -31,7 +36,10 @@ outputs = [0,0,0,0]
 game = Game(4)
 interf = GameInterface(game)
 
+score_w = 1.0
+smoothness_w = 1.0
 def calc_smoothness(game):
+    print("Initializing calc_smoothness...")
     matrix = game.getMatrix()
     smoothness = 0
     # Only rotate twice to avoid double counting
@@ -47,11 +55,12 @@ def calc_smoothness(game):
     return smoothness
 
 def fitness(game, timedOut=False):
+    print("Initializing fitness...")
     score = game.getScore()
     smoothness = calc_smoothness(game)
     matrix = [i for j in game.getMatrix() for i in j]
 
-    return (score * score_w / (smoothness * smoothness_w)) * log2(max(board)) * -1
+    return (score * score_w / (smoothness * smoothness_w)) * log2(max(matrix)) * -1
 
 
 def map_movement(pos):
@@ -64,10 +73,11 @@ def map_movement(pos):
     elif pos == 3:
         return Moves.SWIPE_RIGHT
 
-def genomes(genome_id, genome, config):
+def genomesf(genome_id, genome, config):
+    print("Initializing genomesf...")
     genome.fitness = 0.0
     network = neat.nn.FeedForwardNetwork.create(genome, config)
-    game.restart_game()
+    game.refresh_game()
     interf.set_game(game)
 
     # Play game till game over, then evaluate fitness
@@ -77,7 +87,7 @@ def genomes(genome_id, genome, config):
     ok_moves = 0
     while not is_over:
         entrada = redimension_input_matrix([j for i in matrix for j in i])
-        salida = network.activate(inputs)
+        salida = network.activate(entrada)
         output_moves = [(map_movement(i), salida[i]) for i in range(len(salida))]
         output_moves = sorted(output_moves, key=lambda x: x[1])
 
@@ -92,7 +102,7 @@ def genomes(genome_id, genome, config):
         else:
             consecutive_not_moved = consecutive_not_moved + 1
 
-        if game.getScreen() == Screens.WIN or game.getScreen() == Screens.LOSS:
+        if game.getScreen() == Screens.WIN or game.getScreen() == Screens.LOSE:
             game_over = True
         elif consecutive_not_moved == 15:
             game_over = True
@@ -102,4 +112,31 @@ def genomes(genome_id, genome, config):
 
 def all_genomes(genomes, config):
     for genome_id, genome in genomes:
-        genomes(genome_id, genome, config)
+        print("Genome id: ",str(genome_id))
+        genomesf(genome_id, genome, config)
+
+def run(config_file):
+    config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
+                         neat.DefaultSpeciesSet, neat.DefaultStagnation,
+                         config_file)
+
+    popu = neat.Population(config)
+
+    popu.add_reporter(neat.StdOutReporter(True))
+    statistics = neat.StatisticsReporter()
+    popu.add_reporter(statistics)
+    popu.add_reporter(neat.Checkpointer(None))
+    print
+    winner = popu.run(all_genomes, 50)
+    print('\nBest genome:\n{!s}'.format(winner))
+    print('\nOutput:')
+    winner_network = neat.nn.FeedForwardNetwork.create(winner, config)
+    node_names = {-1: 'A', -2: 'B', 0: 'A XOR B'}
+    show.show_network(config, winner, True, node_names=node_names)
+    show.stats(statistics, ylog=False, view=True)
+    show.plot_species(statistics, view=True)
+
+if __name__ == '__main__':
+    local_directory = os.path.dirname(__file__)
+    config_path = os.path.join(local_directory,"neat_config.txt").replace("\\","/")
+    run(config_path)
