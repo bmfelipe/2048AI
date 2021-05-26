@@ -23,6 +23,7 @@ class GameInterface(Frame):
         self.game = game
 
     def refresh_screen(self):
+        # print("Inside refresh screen...")
         self.matrix = self.game.getMatrix()
         for i in range(self.matrix_size):
             for j in range(self.matrix_size):

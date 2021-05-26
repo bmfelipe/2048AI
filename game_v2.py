@@ -24,7 +24,9 @@ def find_vertical_moves(matrix):
 
 def moves_left(matrix):
     hm = find_horizontal_moves(matrix)
+    # print("Horizontal moves: ",str(hm))
     vm = find_vertical_moves(matrix)
+    # print("Vertical moves: ",str(vm))
     if not hm and not vm:
         return False
     else:
@@ -110,7 +112,9 @@ class Game:
         return shifted
 
     def try_move(self,moves):
+        # print("Inside try_move...")
         moves_l = moves_left(self.matrix)
+        # print("Moves left: ",str(moves_l))
         if not moves_l:
             self.screens = Screens.LOSE
             return False
