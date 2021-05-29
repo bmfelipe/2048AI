@@ -1,3 +1,4 @@
+from __future__ import print_function
 import matplotlib.pyplot as plt
 import warnings
 import numpy as np
@@ -23,7 +24,7 @@ def stats(statistics, ylog=False, view=False, filename='avg_fitness.svg'):
     plt.xlabel("Generations")
     plt.ylabel("Fitness")
     plt.grid()
-    plt.legend(loc="winner")
+    plt.legend(loc="best")
     if ylog:
         plt.gca().set_yscale('symlog')
 
