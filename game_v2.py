@@ -2,7 +2,9 @@ import helper
 
 from helper import *
 from random import randint
+from interface import *
 import random
+import numpy as np
 
 
 def refresh(size):
@@ -150,6 +152,84 @@ class Game:
             self.show_random_tile()
 
         return moved
+
+    
+    def swipe_up(self,event,matrix):
+        self.transpose()
+        self.stack_cells()
+        self.sum_cells()
+        self.stack_cells()
+        self.transpose()
+        self.show_random_tile()
+        self.refresh_screen()
+        self.is_over()
+
+
+    
+    def swipe_down(self,event,matrix):
+        self.transpose()
+        self.reverse()
+        self.stack_cells()
+        self.sum_cells()
+        self.stack_cells()
+        self.reverse()
+        self.transpose()
+        self.show_random_tile()
+        self.refresh_screen()
+        self.is_over()
+
+
+    
+    def swipe_left(self,event,matrix):
+        self.stack_cells()
+        self.sum_cells()
+        self.stack_cells()
+        self.show_random_tile()
+        self.refresh_screen()
+        self.is_over()
+
+    def swipe_right(self,event,matrix):
+        self.reverse()
+        self.stack_cells()
+        self.sum_cells()
+        self.stack_cells()
+        self.reverse()
+        self.show_random_tile()
+        self.refresh_screen()
+        self.is_over()
+ 
+ 
+    def stack_cells(self):
+        stack_matrix = [[0] * 4 for _ in range(4)]
+        for row_cnt in range(4):
+            fill_pos = 0
+            for col_cnt in range(4):
+                if self.matrix[row_cnt][col_cnt] != 0:
+                    stack_matrix[row_cnt][fill_pos] = self.matrix[row_cnt][col_cnt]
+                    fill_pos += 1
+
+        self.matrix = stack_matrix
+    
+    def sum_cells(self):
+        for row in range(4):
+            for col in range(3):
+                if self.matrix[row][col] != 0 and self.matrix[row][col] == self.matrix[row][col+1]:
+                    self.matrix[row][col] *= 2
+                    self.matrix[row][col+1] = 0
+                    self.score += self.matrix[row][col]
+
+
+    def reverse(self):
+        reverse_matrix = [[0] * 4 for _ in range(4)]
+        for row in range(4):
+            for col in range(4):
+                reverse_matrix[row][col] = self.matrix[row][3-col]
+        self.matrix = reverse_matrix
+    
+    def transpose(self):
+        self.matrix = np.asarray(self.matrix).transpose()
+
+
 
     
 
