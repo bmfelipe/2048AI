@@ -1,4 +1,3 @@
-import helper
 from tkinter import *
 import colors as colors 
 from helper import Moves
@@ -31,6 +30,28 @@ class GameInterface(Frame):
     def set_game(self,game):
         self.game = game
 
+    # def refresh_screen(self):
+    #     self.matrix = self.game.getMatrix()
+    #     for row in range(self.matrix_size):
+    #         for col in range(self.matrix_size):
+    #             cell_value = self.matrix[row][col]
+    #             print("cell_value: ",cell_value)
+    #             if cell_value == 0:
+    #                 self.matrix_positions[row][col].configure(text="",bg=colors.EMPTY_CELL_COLOR)
+    #                 self.matrix_positions[row][col].configure(text="",bg=colors.EMPTY_CELL_COLOR,)
+    #             else:
+    #                 self.matrix_positions[row][col].configure(bg=colors.TILE_COLORS[cell_value])
+    #                 self.matrix_positions[row][col].configure(
+    #                     bg=colors.TILE_COLORS[cell_value],
+    #                     fg=colors.NUMBERS_COLORS[cell_value],
+    #                     font=colors.LABEL_FONT,
+    #                     text=str(cell_value)
+    #                     )
+    #     self.score = self.game.getScore()
+    #     self.score_l.configure(text=self.score)
+    #     self.update_idletasks()
+
+
     def refresh_screen(self):
         for row in range(4):
             for col in range(4):
@@ -47,8 +68,10 @@ class GameInterface(Frame):
                         text=str(cell_value)
                         )
         self.score = self.game.getScore()
-        self.score_l.configure(text=self.score)
+        # self.score_l.configure(text=self.score)
+        self.score_position[0].config(text="Score: " + str(self.score))
         self.update_idletasks()
+        self.update()
 
     # def refresh_screen(self):
     #     # print("Inside refresh screen...")

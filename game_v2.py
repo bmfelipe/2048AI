@@ -5,6 +5,8 @@ from random import randint
 from interface import *
 import random
 import numpy as np
+from pynput.keyboard import Key, Controller
+
 
 
 def refresh(size):
@@ -35,12 +37,19 @@ def moves_left(matrix):
         return True
 
 
-class Game:
+class  Game(Frame):
     def __init__(self,game_size=4):
+        Frame.__init__(self)
         self.game_size = game_size
         self.matrix = refresh(game_size)
         self.score = 0
         self.screens = Screens.INIT
+
+        self.master.bind("<Up>",self.swipe_up)
+        self.master.bind("<Down>",self.swipe_down)
+        self.master.bind("<Left>",self.swipe_left)
+        self.master.bind("<Right>",self.swipe_right)
+
 
     #getters
     def getScore(self):
@@ -55,6 +64,7 @@ class Game:
     def getScreen(self):
         return self.screens
 
+
     def refresh_game(self,game_size=None):
         self.game_size = game_size if game_size is not None else self.game_size
         self.score = 0
@@ -63,12 +73,17 @@ class Game:
         self.show_random_tile()
         self.show_random_tile()
 
+    
     def show_random_tile(self):
         prob = randint(1, 100)
-        if prob >=90 :
+        print("Prob: ",str(prob))
+        if (prob >=90):
             new_tile = 4
+            print("Prob 10%")
         else:
             new_tile = 2
+            print("Prob 90%")
+
 
         row = random.randint(0,3)
         col = random.randint(0,3)
@@ -77,6 +92,8 @@ class Game:
             row = random.randint(0,3)
             col = random.randint(0,3)
         self.matrix[row][col] = new_tile
+        print("New tile: ",new_tile)
+
 
     def count_cell_value(mat, val):
         cnt = 0
@@ -125,48 +142,56 @@ class Game:
         rotations = 0
         back_rotations = 0
         if moves == Moves.SWIPE_UP:
-            rotations = 2
-            back_rotations = 2
+            self.swipe_up()
+            moved = True
+            # rotations = 2
+            # back_rotations = 2
         elif moves == Moves.SWIPE_DOWN:
-            rotations = 0
-            back_rotations = 0
+            self.swipe_down()
+            moved = True
+            # rotations = 0
+            # back_rotations = 0
         elif moves == Moves.SWIPE_LEFT:
-            rotations = 3
-            back_rotations = 1
+            self.swipe_left()
+            moved = True
+            # rotations = 3
+            # back_rotations = 1
         elif moves == Moves.SWIPE_RIGHT:
-            rotations = 1
-            back_rotations = 3
+            self.swipe_right()
+            moved = True
+            # rotations = 1
+            # back_rotations = 3
         else:
             return moved
 
-        helper.rotate_clockwise(self.matrix, rotations)
+        # helper.rotate_clockwise(self.matrix, rotations)
 
         # Merge then shift through empty space
-        merged = self.merge_down(self.matrix)
-        shifted = self.shift_down(self.matrix)
-        moved = merged or shifted
+        # merged = self.merge_down(self.matrix)
+        # shifted = self.shift_down(self.matrix)
+        # moved = merged or shifted
 
-        helper.rotate_clockwise(self.matrix, back_rotations)
+        # helper.rotate_clockwise(self.matrix, back_rotations)
 
-        if moved:
-            self.show_random_tile()
+        # if moved:
+        #     self.show_random_tile()
 
         return moved
 
     
-    def swipe_up(self,event,matrix):
+    def swipe_up(self):
         self.transpose()
         self.stack_cells()
         self.sum_cells()
         self.stack_cells()
         self.transpose()
         self.show_random_tile()
-        self.refresh_screen()
-        self.is_over()
+        # self.refresh_screen()
+        # self.is_over()
 
 
     
-    def swipe_down(self,event,matrix):
+    def swipe_down(self):
         self.transpose()
         self.reverse()
         self.stack_cells()
@@ -175,28 +200,28 @@ class Game:
         self.reverse()
         self.transpose()
         self.show_random_tile()
-        self.refresh_screen()
-        self.is_over()
+        # self.refresh_screen()
+        # self.is_over()
 
 
     
-    def swipe_left(self,event,matrix):
+    def swipe_left(self):
         self.stack_cells()
         self.sum_cells()
         self.stack_cells()
         self.show_random_tile()
-        self.refresh_screen()
-        self.is_over()
+        # self.refresh_screen()
+        # self.is_over()
 
-    def swipe_right(self,event,matrix):
+    def swipe_right(self):
         self.reverse()
         self.stack_cells()
         self.sum_cells()
         self.stack_cells()
         self.reverse()
         self.show_random_tile()
-        self.refresh_screen()
-        self.is_over()
+        # self.refresh_screen()
+        # self.is_over()
  
  
     def stack_cells(self):
@@ -209,6 +234,8 @@ class Game:
                     fill_pos += 1
 
         self.matrix = stack_matrix
+        # print("Stacked matrix:")
+        # print(self.matrix)
     
     def sum_cells(self):
         for row in range(4):
@@ -217,6 +244,9 @@ class Game:
                     self.matrix[row][col] *= 2
                     self.matrix[row][col+1] = 0
                     self.score += self.matrix[row][col]
+        # print("Summed matrix:")
+        # print(self.matrix)
+
 
 
     def reverse(self):
@@ -228,6 +258,8 @@ class Game:
     
     def transpose(self):
         self.matrix = np.asarray(self.matrix).transpose()
+        # print("Transpose matrix")
+        # print(self.matrix)
 
 
 
