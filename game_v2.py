@@ -40,10 +40,21 @@ def moves_left(matrix):
 class  Game(Frame):
     def __init__(self,game_size=4):
         Frame.__init__(self)
+        self.grid()
+        self.master.title("2048")
+        self.main_grid = Frame(
+            self, bg = colors.GRID_COLOR, bd=3, width=600, height=600
+        )
+        self.main_grid.grid(pady=(100,0))
+
+
+
         self.game_size = game_size
         self.matrix = refresh(game_size)
         self.score = 0
         self.screens = Screens.INIT
+        self.score_position = []
+
 
         self.master.bind("<Up>",self.swipe_up)
         self.master.bind("<Down>",self.swipe_down)
@@ -64,6 +75,59 @@ class  Game(Frame):
     def getScreen(self):
         return self.screens
 
+    def interface(self):
+        self.cells = []
+        for i in range(4):
+            row = []
+            for j in range(4):
+                cell_frame = Frame(
+                    self.main_grid,
+                    bg=colors.EMPTY_CELL_COLOR,
+                    width=150,
+                    height=150
+                )
+                cell_frame.grid(row=i,column=j, padx=5, pady=5)
+                cell_number = Label(self.main_grid,bg=colors.EMPTY_CELL_COLOR)
+                cell_number.grid(row=i,column=j)
+                data = {
+                    "frame":cell_frame,
+                    "number":cell_number
+                }
+                row.append(data)
+            self.cells.append(row)
+        score_f = Frame(self, width=50, height=50)
+        score_f.grid()
+        score_f.place(relx=0.5, y=45, anchor="center")
+
+        score_l = Label(master=score_f, text="Score2: " + str(self.score), justify=CENTER,font=colors.SCORE_LABEL_FONT)
+        self.score_position.append(score_l)
+        score_l.grid()
+        
+        self.update()
+
+    def refresh_screen(self):
+        for row in range(4):
+            for col in range(4):
+                cell_value = self.matrix[row][col]
+                if cell_value == 0:
+                    self.cells[row][col]["frame"].config(bg=colors.EMPTY_CELL_COLOR)
+                    self.cells[row][col]["number"].config(bg=colors.EMPTY_CELL_COLOR, text="")
+                else:                    
+                    # cell_number = Label(self.main_grid,bg=colors.EMPTY_CELL_COLOR)
+                    self.cells[row][col]["frame"].config(bg=colors.TILE_COLORS[cell_value])
+                    self.cells[row][col]["number"].config(
+                        bg=colors.TILE_COLORS[cell_value],
+                        fg=colors.NUMBERS_COLORS[cell_value],
+                        font=colors.LABEL_FONT,
+                        text=str(cell_value)
+                        )
+                # self.cells.append(row)
+
+        self.score = self.getScore()
+        self.score_position[0].config(text="Score1: " + str(self.score))
+        self.update_idletasks()
+        # self.update()
+
 
     def refresh_game(self,game_size=None):
         self.game_size = game_size if game_size is not None else self.game_size
@@ -76,13 +140,10 @@ class  Game(Frame):
     
     def show_random_tile(self):
         prob = randint(1, 100)
-        print("Prob: ",str(prob))
         if (prob >=90):
             new_tile = 4
-            print("Prob 10%")
         else:
             new_tile = 2
-            print("Prob 90%")
 
 
         row = random.randint(0,3)
@@ -92,8 +153,6 @@ class  Game(Frame):
             row = random.randint(0,3)
             col = random.randint(0,3)
         self.matrix[row][col] = new_tile
-        print("New tile: ",new_tile)
-
 
     def count_cell_value(mat, val):
         cnt = 0
@@ -131,50 +190,26 @@ class  Game(Frame):
         return shifted
 
     def try_move(self,moves):
-        # print("Inside try_move...")
         moves_l = moves_left(self.matrix)
-        # print("Moves left: ",str(moves_l))
         if not moves_l:
             self.screens = Screens.LOSE
             return False
 
         moved = False
-        rotations = 0
-        back_rotations = 0
         if moves == Moves.SWIPE_UP:
             self.swipe_up()
             moved = True
-            # rotations = 2
-            # back_rotations = 2
         elif moves == Moves.SWIPE_DOWN:
             self.swipe_down()
             moved = True
-            # rotations = 0
-            # back_rotations = 0
         elif moves == Moves.SWIPE_LEFT:
             self.swipe_left()
             moved = True
-            # rotations = 3
-            # back_rotations = 1
         elif moves == Moves.SWIPE_RIGHT:
             self.swipe_right()
             moved = True
-            # rotations = 1
-            # back_rotations = 3
         else:
             return moved
-
-        # helper.rotate_clockwise(self.matrix, rotations)
-
-        # Merge then shift through empty space
-        # merged = self.merge_down(self.matrix)
-        # shifted = self.shift_down(self.matrix)
-        # moved = merged or shifted
-
-        # helper.rotate_clockwise(self.matrix, back_rotations)
-
-        # if moved:
-        #     self.show_random_tile()
 
         return moved
 
@@ -186,7 +221,7 @@ class  Game(Frame):
         self.stack_cells()
         self.transpose()
         self.show_random_tile()
-        # interf.refresh_screen()
+        # self.refresh_screen()
         # self.is_over()
 
 
@@ -234,8 +269,6 @@ class  Game(Frame):
                     fill_pos += 1
 
         self.matrix = stack_matrix
-        # print("Stacked matrix:")
-        # print(self.matrix)
     
     def sum_cells(self):
         for row in range(4):
@@ -244,9 +277,6 @@ class  Game(Frame):
                     self.matrix[row][col] *= 2
                     self.matrix[row][col+1] = 0
                     self.score += self.matrix[row][col]
-        # print("Summed matrix:")
-        # print(self.matrix)
-
 
 
     def reverse(self):
@@ -258,8 +288,6 @@ class  Game(Frame):
     
     def transpose(self):
         self.matrix = np.asarray(self.matrix).transpose()
-        # print("Transpose matrix")
-        # print(self.matrix)
 
 
 
