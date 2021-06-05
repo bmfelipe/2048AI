@@ -49,7 +49,7 @@ class  Game(Frame):
         self.master.bind("<Down>",self.swipe_down)
         self.master.bind("<Left>",self.swipe_left)
         self.master.bind("<Right>",self.swipe_right)
-
+        
 
     #getters
     def getScore(self):
@@ -186,7 +186,7 @@ class  Game(Frame):
         self.stack_cells()
         self.transpose()
         self.show_random_tile()
-        # self.refresh_screen()
+        # interf.refresh_screen()
         # self.is_over()
 
 
