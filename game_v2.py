@@ -39,6 +39,7 @@ def moves_left(matrix):
 
 class  Game(Frame):
     def __init__(self,game_size=4):
+
         Frame.__init__(self)
         self.grid()
         self.master.title("2048")
@@ -48,18 +49,18 @@ class  Game(Frame):
         self.main_grid.grid(pady=(100,0))
 
 
-
         self.game_size = game_size
         self.matrix = refresh(game_size)
         self.score = 0
         self.screens = Screens.INIT
         self.score_position = []
+        self.cells = []
 
 
-        self.master.bind("<Up>",self.swipe_up)
-        self.master.bind("<Down>",self.swipe_down)
-        self.master.bind("<Left>",self.swipe_left)
-        self.master.bind("<Right>",self.swipe_right)
+        # self.master.bind("<Up>",self.swipe_up)
+        # self.master.bind("<Down>",self.swipe_down)
+        # self.master.bind("<Left>",self.swipe_left)
+        # self.master.bind("<Right>",self.swipe_right)
         
 
     #getters
@@ -74,9 +75,11 @@ class  Game(Frame):
 
     def getScreen(self):
         return self.screens
+    def set_game(self):
+        return self.game
+
 
     def interface(self):
-        self.cells = []
         for i in range(4):
             row = []
             for j in range(4):
