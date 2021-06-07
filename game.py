@@ -1,3 +1,4 @@
+from test import canMoveUp
 import tkinter as tk #GUI
 import colors as colors 
 import random

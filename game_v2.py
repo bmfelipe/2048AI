@@ -12,29 +12,9 @@ from pynput.keyboard import Key, Controller
 def refresh(size):
     return [[0 for i in range(0, size)] for j in range(0, size)]
 
-def find_horizontal_moves(matrix):
-    for row in range(4):
-        for col in range(3):
-            if matrix[row][col] == matrix[row][col+1]:
-                return True
-    return False
 
-def find_vertical_moves(matrix):
-    for row in range(3):
-        for col in range(4):
-            if matrix[row][col] == matrix[row+1][col]:
-                return True
-    return False
 
-def moves_left(matrix):
-    hm = find_horizontal_moves(matrix)
-    # print("Horizontal moves: ",str(hm))
-    vm = find_vertical_moves(matrix)
-    # print("Vertical moves: ",str(vm))
-    if not hm and not vm:
-        return False
-    else:
-        return True
+flag_over=0
 
 
 class  Game(Frame):
@@ -77,6 +57,111 @@ class  Game(Frame):
         return self.screens
     def set_game(self):
         return self.game
+
+    # def find_horizontal_moves(self,matrix):
+    #     for row in range(4):
+    #         for col in range(3):
+    #             if matrix[row][col] == matrix[row][col+1]:
+    #                 return True
+    #     return False
+
+    # def find_vertical_moves(self,matrix):
+    #     for row in range(3):
+    #         for col in range(4):
+    #             if matrix[row][col] == matrix[row+1][col]:
+    #                 return True
+    #     return False
+
+
+    # def find_horizontal_moves(self):
+    #     for row in range(4):
+    #         for col in range(3):
+    #             if self.matrix[row][col] == self.matrix[row][col+1]:
+    #                 return True
+    #     return False
+
+    def canMoveLeft(self) -> bool:
+        for row in range(4):
+            k = -1
+            for col in range(3, -1, -1):
+                if self.matrix[row][col] > 0:
+                    k = col
+                    break
+            if k > -1:
+                for col in range(k, 0, -1):
+                    if self.matrix[row][col-1] == 0 or self.matrix[row][col] == self.matrix[row][col-1]:
+                        return True
+        return False
+
+    def canMoveRight(self) -> bool:
+        for row in range(4):
+            k = -1
+            for col in range(4):
+                if self.matrix[row][col] > 0:
+                    k = col
+                    break
+            if k > -1:
+                for col in range(k, 3):
+                    if self.matrix[row][col+1] == 0 or self.matrix[row][col] == self.matrix[row][col+1]:
+                        return True
+        return False
+
+    def find_horizontal_moves(self):
+        if self.canMoveRight() or self.canMoveLeft():
+            return True
+        else:
+            return False
+
+    
+    def canMoveUp(self) -> bool:
+        for col in range(4):
+            k = -1
+            for row in range(3, -1, -1):
+                if self.matrix[row][col] > 0:
+                    k = row
+                    break
+            if k > -1:
+                for row in range(k, 0, -1):
+                    if self.matrix[row-1][col] == 0 or self.matrix[row][col] == self.matrix[row-1][col]:
+                        return True
+        return False
+
+    def canMoveDown(self) -> bool:
+        for col in range(4):
+            k = -1
+            for row in range(4):
+                if self.matrix[row][col] > 0:
+                    k = row
+                    break
+            if k > -1:
+                for row in range(k, 3):
+                    if self.matrix[row+1][col] == 0 or self.matrix[row][col] == self.matrix[row+1][col]:
+                        return True
+        return False
+    
+    def find_vertical_moves(self):
+        if self.canMoveUp() or self.canMoveDown():
+            return True
+        else:
+            return False
+
+
+    # def find_vertical_moves(self):
+    #     for row in range(3):
+    #         for col in range(4):
+    #             if self.matrix[row][col] == self.matrix[row+1][col]:
+    #                 return True
+    #     return False
+
+
+    def moves_left(self):
+        hm = self.find_horizontal_moves()
+        vm = self.find_vertical_moves()
+        if not hm and not vm:
+            return False
+        else:
+            return True
+
 
 
     def interface(self):
@@ -166,34 +251,34 @@ class  Game(Frame):
                 
         return cnt
 
-    def merge_down(self,matrix):
-        merged = False
-        for row in range(len(matrix) - 1, 0, -1):
-            for col in range(0, len(matrix[row])):
-                if matrix[row][col] != 0:
-                    if matrix[row][col] == matrix[row - 1][col]:
-                        merged = True
-                        new_value = matrix[row][col] + matrix[row - 1][col]
-                        matrix[row][col] = new_value
-                        matrix[row - 1][col] = 0
-                        self.score = self.score + new_value
-        return merged
+    # def merge_down(self,matrix):
+    #     merged = False
+    #     for row in range(len(matrix) - 1, 0, -1):
+    #         for col in range(0, len(matrix[row])):
+    #             if matrix[row][col] != 0:
+    #                 if matrix[row][col] == matrix[row - 1][col]:
+    #                     merged = True
+    #                     new_value = matrix[row][col] + matrix[row - 1][col]
+    #                     matrix[row][col] = new_value
+    #                     matrix[row - 1][col] = 0
+    #                     self.score = self.score + new_value
+    #     return merged
 
-    def shift_down(self, matrix):
-        shifted = False
-        for row in range(len(matrix) - 1, -1, -1):
-            for col in range(0, len(matrix[row])):
-                temp_row = row
-                while temp_row != len(matrix) - 1 and matrix[temp_row + 1][col] == 0:
-                    shifted = True
-                    matrix[temp_row + 1][col] = matrix[temp_row][col]
-                    matrix[temp_row][col] = 0
-                    temp_row = temp_row + 1
+    # def shift_down(self, matrix):
+    #     shifted = False
+    #     for row in range(len(matrix) - 1, -1, -1):
+    #         for col in range(0, len(matrix[row])):
+    #             temp_row = row
+    #             while temp_row != len(matrix) - 1 and matrix[temp_row + 1][col] == 0:
+    #                 shifted = True
+    #                 matrix[temp_row + 1][col] = matrix[temp_row][col]
+    #                 matrix[temp_row][col] = 0
+    #                 temp_row = temp_row + 1
 
-        return shifted
+    #     return shifted
 
     def try_move(self,moves):
-        moves_l = moves_left(self.matrix)
+        moves_l = self.moves_left()
         if not moves_l:
             self.screens = Screens.LOSE
             return False
@@ -291,6 +376,39 @@ class  Game(Frame):
     
     def transpose(self):
         self.matrix = np.asarray(self.matrix).transpose()
+
+    def available_moves(self):
+        available_moves_list =[]
+        if self.find_horizontal_moves():
+            available_moves_list.extend(["a","d"])
+        else:
+            if "a" in available_moves_list or "d" in available_moves_list:
+                available_moves_list.remove("a")
+                available_moves_list.remove("d")
+
+        if self.find_vertical_moves():
+            available_moves_list.extend(["w","s"])
+
+        else:
+            if "w" in available_moves_list or "s" in available_moves_list:
+                available_moves_list.remove("w")
+                available_moves_list.remove("s")
+
+        print("Available moves: ",available_moves_list)
+        return available_moves_list
+
+
+    def is_over(self):
+        if any(2048 in row for row in self.matrix):
+            is_over_frame =  Frame(self.main_grid,borderwidth=2)
+            is_over_frame.place(relx=0.5, rely=0.5, anchor="center")
+            Label(is_over_frame, text="Victory", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
+            flag_over=1
+        elif not any(0 in row for row in self.matrix) and not self.find_horizontal_moves() and not self.find_vertical_moves():
+            is_over_frame =  Frame(self.main_grid,borderwidth=2)
+            is_over_frame.place(relx=0.5, rely=0.5, anchor="center")
+            Label(is_over_frame, text="Game Over", bg=colors.EMPTY_CELL_COLOR, fg=colors.NUMBERS_COLORS[2], font=colors.SCORE_LABEL_FONT).pack()
+            flag_over=1
 
 
 
