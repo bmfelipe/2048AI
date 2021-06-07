@@ -28,10 +28,8 @@ mapped_keyz = {None: None, "w": Keyz.UP, "s": Keyz.DOWN, "a": Keyz.LEFT, "d": Ke
 def key_to_move(key):
     return mapped_moves[key]
 
-
 def char_to_key(char):
     return mapped_keyz[char]
-
 
 def char_to_move(char):
     return mapped_moves[mapped_keyz[char]]
@@ -46,7 +44,6 @@ def start():
 def rotate_clockwise(arr, iteration = 1):
     if iteration <= 0:
         return
-
     l = len(arr)
     for i in range(0, iteration):
         for s in range(0, int(l / 2)):
@@ -56,5 +53,4 @@ def rotate_clockwise(arr, iteration = 1):
                 arr[l - s - j - 1][s] = arr[l - s - 1][l - s - j - 1]
                 arr[l - s - 1][l - s - j - 1] = arr[s + j][l - s - 1]
                 arr[s + j][l - s - 1] = temp
-
     return arr

@@ -34,12 +34,10 @@ for i in range(4):
 outputs = [0,0,0,0]
 
 game = Game(4)
-# interf = GameInterface(game)
 
 score_w = 1.0
 smoothness_w = 1.0
 def calc_smoothness(game):
-    # print("Initializing calc_smoothness...")
     matrix = game.getMatrix()
     smoothness = 0
     for rotation in range(2):
@@ -75,17 +73,12 @@ def genomesf(genome_id, genome, config):
     network = neat.nn.FeedForwardNetwork.create(genome, config)
     game.interface()
     game.refresh_game()
-    # interf.set_game(game)
 
-    # Play game till game over, then evaluate fitness
     is_over = False
     matrix = game.getMatrix()
     consecutive_not_moved = 0
     ok_moves = 0
-    # aux_counter = 0
     while not is_over:
-        # time.sleep(1)
-        # print("Starting redimension number: ",str(aux_counter))
         entrada = redimension_input_matrix([j for i in matrix for j in i])
         salida = network.activate(entrada)
         output_moves = [(map_movement(i), salida[i]) for i in range(len(salida))]
@@ -100,17 +93,12 @@ def genomesf(genome_id, genome, config):
         if moved:
             game.refresh_screen()
             ok_moves = ok_moves + 1
-            # aux_counter = aux_counter + 1
         else:
             consecutive_not_moved = consecutive_not_moved + 1
-            # print("Consecutive not moved: ",str(consecutive_not_moved))
-            # aux_counter = aux_counter + 1
 
         if game.getScreen() == Screens.WIN or game.getScreen() == Screens.LOSE:
-            # print("Game end WIN or LOSE")
             is_over = True
         elif consecutive_not_moved == 2:
-            # print("Game end")
             is_over = True
 
     genome.fitness = fitness(game, consecutive_not_moved == 2)
@@ -118,7 +106,6 @@ def genomesf(genome_id, genome, config):
 
 def all_genomes(genomes, config):
     for genome_id, genome in genomes:
-        # print("Genome id: ",str(genome_id))
         genomesf(genome_id, genome, config)
 
 def run(config_file):
