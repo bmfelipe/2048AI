@@ -1,8 +1,6 @@
 from neat import statistics
 import game_v2
 from game_v2 import *
-import interface
-from interface import *
 import helper
 import math
 import neat
@@ -80,14 +78,16 @@ def genomesf(genome_id, genome, config):
     ok_moves = 0
     while not is_over:
         entrada = redimension_input_matrix([j for i in matrix for j in i])
+        print("Hola entrada: ",entrada)
         salida = network.activate(entrada)
         output_moves = [(map_movement(i), salida[i]) for i in range(len(salida))]
         output_moves = sorted(output_moves, key=lambda x: x[1])
+        print("Hola salida: ",output_moves)
+
 
         for (direction, weight) in output_moves:
             moved = game.try_move(direction)
             if moved:
-                # aux_counter = aux_counter + 1
                 break
 
         if moved:

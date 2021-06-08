@@ -2,7 +2,9 @@ import helper
 
 from helper import *
 from random import randint
-from interface import *
+from tkinter import *
+import colors as colors 
+from helper import Moves
 import random
 import numpy as np
 from pynput.keyboard import Key, Controller
@@ -19,7 +21,6 @@ flag_over=0
 
 class  Game(Frame):
     def __init__(self,game_size=4):
-
         Frame.__init__(self)
         self.grid()
         self.master.title("2048")
