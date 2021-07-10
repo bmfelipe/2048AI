@@ -78,11 +78,9 @@ def genomesf(genome_id, genome, config):
     ok_moves = 0
     while not is_over:
         entrada = redimension_input_matrix([j for i in matrix for j in i])
-        print("Hola entrada: ",entrada)
         salida = network.activate(entrada)
         output_moves = [(map_movement(i), salida[i]) for i in range(len(salida))]
         output_moves = sorted(output_moves, key=lambda x: x[1])
-        print("Hola salida: ",output_moves)
 
 
         for (direction, weight) in output_moves:
@@ -97,6 +95,7 @@ def genomesf(genome_id, genome, config):
             consecutive_not_moved = consecutive_not_moved + 1
 
         if game.getScreen() == Screens.WIN or game.getScreen() == Screens.LOSE:
+            print("Hola over: ",game.getScreen())
             is_over = True
         elif consecutive_not_moved == 2:
             is_over = True
